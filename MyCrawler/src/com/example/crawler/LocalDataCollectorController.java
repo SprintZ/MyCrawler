@@ -26,6 +26,7 @@ public class LocalDataCollectorController {
 //			return;
 //		}
 
+		String domain = "http://www.ics.uci.edu/";
 		String rootFolder = "data/crawl";
 		int numberOfCrawlers = 5;
 
@@ -39,7 +40,7 @@ public class LocalDataCollectorController {
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-		controller.addSeed("http://www.ics.uci.edu/");
+		controller.addSeed(domain);
 		controller.start(LocalDataCollectorCrawler.class, numberOfCrawlers);
 
 		List<Object> crawlersLocalData = controller.getCrawlersLocalData();
@@ -52,9 +53,10 @@ public class LocalDataCollectorController {
 			totalTextSize += stat.getTotalTextSize();
 			totalProcessedPages += stat.getTotalProcessedPages();
 		}
-		//write txt
+		
+		//write fetch_NewsSite1.csv
 		try {
-			File writename = new File("file.txt");
+			File writename = new File("fetch_NewsSite1.csv");
 	        writename.createNewFile();
 	        BufferedWriter out = new BufferedWriter(new FileWriter(writename));  
 	        for(Object localData: crawlersLocalData) {
@@ -62,7 +64,61 @@ public class LocalDataCollectorController {
 	        	for(MyPage p: stat.pageLists) {
 	        		out.write(p.getUrl());
 		        	out.write(",");
-		        	out.write(p.getStatusCode());
+		        	out.write(p.getStatusCode()+"");
+		        	out.write("\n");
+	        	}        	
+	        }
+	        out.flush(); 
+	        out.close();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//write visit_NewsSite1.csv
+		try {
+			File writename = new File("visit_NewsSite1.csv");
+	        writename.createNewFile();
+	        BufferedWriter out = new BufferedWriter(new FileWriter(writename));  
+	        for(Object localData: crawlersLocalData) {
+	        	CrawlStat stat = (CrawlStat) localData;
+	        	for(MyPage p: stat.pageLists) {
+	        		if(!(p.getStatusCode() == 200)) {
+	        			continue;
+	        		}
+	        		out.write(p.getUrl());
+		        	out.write(",");
+		        	out.write(p.getSize()+"");
+		        	out.write(",");
+		        	out.write(p.getOutlinks()+"");
+		        	out.write(",");
+		        	out.write(p.getType());
+		        	out.write("\n");
+	        	}        	
+	        }
+	        out.flush(); 
+	        out.close();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//write urls_Newsite1.csv
+		try {
+			File writename = new File("urls_Newsite1.csv");
+	        writename.createNewFile();
+	        BufferedWriter out = new BufferedWriter(new FileWriter(writename));  
+	        for(Object localData: crawlersLocalData) {
+	        	CrawlStat stat = (CrawlStat) localData;
+	        	for(MyPage p: stat.pageLists) {
+	        		out.write(p.getUrl());
+		        	out.write(",");
+		        	if(p.getUrl().startsWith(domain)) {
+		        		out.write("OK");
+		        	}
+		        	else {
+		        		out.write("N_OK");
+		        	}
 		        	out.write("\n");
 	        	}        	
 	        }

@@ -35,20 +35,31 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 	public void visit(Page page) {
 		logger.info("Visited: {}", page.getWebURL().getURL());
 		System.out.println(page.getWebURL().getURL());
+		System.out.println(page.getStatusCode());
 		myCrawlStat.incProcessedPages();
 		MyPage p = new MyPage();
 		//status code
 		p.setStatusCode(page.getStatusCode());
 		//URL
 		p.setUrl(page.getWebURL().getURL());
-		myCrawlStat.pageLists.add(p);
 		
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData parseData = (HtmlParseData) page.getParseData();
 			Set<WebURL> links = parseData.getOutgoingUrls();
+			for(WebURL w:links) {
+				MyPage tmp = new MyPage();
+				tmp.setUrl(w.getURL());
+				myCrawlStat.pageLists.add(tmp);
+			}
+			//content-type
+			p.setType(page.getContentType());
 			myCrawlStat.incTotalLinks(links.size());
+			//outLinks
+			p.setSize(links.size());
 			try {
 				myCrawlStat.incTotalTextSize(parseData.getText().getBytes("UTF-8").length);
+				//size
+				p.setSize(parseData.getText().getBytes("UTF-8").length);
 			} catch (UnsupportedEncodingException ignored) {
 				// Do nothing
 			}
@@ -57,6 +68,7 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 		if ((myCrawlStat.getTotalProcessedPages() % 50) == 0) {
 			dumpMyData();
 		}
+		myCrawlStat.pageLists.add(p);
 	}
 
 	/**
