@@ -6,8 +6,17 @@ public class CrawlStat {
 	private int totalProcessedPages;
 	private long totalLinks;
 	private long totalTextSize;
-	public ArrayList<MyPage> pageLists = new ArrayList<MyPage>();
+	private int fetchError = 0;
+	public ArrayList<MyPage> fetchPageLists = new ArrayList<MyPage>();
+	public ArrayList<MyPage> visitPageLists = new ArrayList<MyPage>();
 
+	public int getFetchError() {
+		return fetchError;
+	}
+
+	public void fetchErrorPages() {
+		fetchError++;
+	}
 	public int getTotalProcessedPages() {
 		return totalProcessedPages;
 	}

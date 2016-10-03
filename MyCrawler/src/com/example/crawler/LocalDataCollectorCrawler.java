@@ -14,9 +14,10 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class LocalDataCollectorCrawler extends WebCrawler {
 	private static final Logger logger = LoggerFactory.getLogger(LocalDataCollectorCrawler.class);
+	public int fetchError = 0;
 
 	private static final Pattern FILTERS = Pattern
-			.compile(".*(\\.(css|js|bmp|gif|jpe?g|png|tiff?|mid|mp2|mp3|mp4|wav|avi|mov|mpeg|ram|m4v|pdf"
+			.compile(".*(\\.(css|js|mid|mp2|mp3|mp4|wav|avi|mov|mpeg|ram|m4v"
 					+ "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
 
 	CrawlStat myCrawlStat;
@@ -24,41 +25,58 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 	public LocalDataCollectorCrawler() {
 		myCrawlStat = new CrawlStat();
 	}
+	
+	/**
+     * This function is called once the header of a page is fetched. It can be
+     * overridden by sub-classes to perform custom logic for different status
+     * codes. For example, 404 pages can be logged, etc.
+     *
+     * @param webUrl WebUrl containing the statusCode
+     * @param statusCode Html Status Code number
+     * @param statusDescription Html Status COde description
+     */
+    protected void handlePageStatusCode(WebURL webUrl, int statusCode, String statusDescription) {
+        // Do nothing by default
+        // Sub-classed can override this to add their custom functionality
+    	//fetch url
+    	MyPage p = new MyPage(webUrl.getURL(), statusCode);
+    	myCrawlStat.fetchPageLists.add(p);
+    }
 
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
-		return !FILTERS.matcher(href).matches() && href.startsWith("http://www.ics.uci.edu/");
+		return !FILTERS.matcher(href).matches() && href.startsWith("http://www.espn.com");
 	}
 
 	@Override
 	public void visit(Page page) {
 		logger.info("Visited: {}", page.getWebURL().getURL());
-		System.out.println(page.getWebURL().getURL());
-		System.out.println(page.getStatusCode());
 		myCrawlStat.incProcessedPages();
 		MyPage p = new MyPage();
-		//status code
+		// status code
 		p.setStatusCode(page.getStatusCode());
-		//URL
+		// URL
 		p.setUrl(page.getWebURL().getURL());
-		
+		// out links false
+		p.setOutlink(false);
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData parseData = (HtmlParseData) page.getParseData();
 			Set<WebURL> links = parseData.getOutgoingUrls();
-			for(WebURL w:links) {
+			for (WebURL w : links) {
 				MyPage tmp = new MyPage();
 				tmp.setUrl(w.getURL());
+				tmp.setOutlink(true);
 				myCrawlStat.pageLists.add(tmp);
 			}
-			//content-type
+			// content-type
 			p.setType(page.getContentType());
 			myCrawlStat.incTotalLinks(links.size());
-			//outLinks
+			// outLinks
 			p.setSize(links.size());
 			try {
 				myCrawlStat.incTotalTextSize(parseData.getText().getBytes("UTF-8").length);
-				//size
+				// size
 				p.setSize(parseData.getText().getBytes("UTF-8").length);
 			} catch (UnsupportedEncodingException ignored) {
 				// Do nothing
@@ -68,7 +86,7 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 		if ((myCrawlStat.getTotalProcessedPages() % 50) == 0) {
 			dumpMyData();
 		}
-		myCrawlStat.pageLists.add(p);
+//		myCrawlStat.pageLists.add(p);
 	}
 
 	/**
@@ -96,4 +114,12 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 		logger.info("Crawler {} > Total Links Found: {}", id, myCrawlStat.getTotalLinks());
 		logger.info("Crawler {} > Total Text Size: {}", id, myCrawlStat.getTotalTextSize());
 	}
+
+	protected void onContentFetchError(WebURL webUrl) {
+		logger.warn("Can't fetch content of: {}", webUrl.getURL());
+		myCrawlStat.fetchErrorPages();
+		// Do nothing by default (except basic logging)
+		// Sub-classed can override this to add their custom functionality
+	}
+
 }
