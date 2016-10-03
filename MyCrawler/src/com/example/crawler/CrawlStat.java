@@ -7,6 +7,7 @@ public class CrawlStat {
 	private long totalLinks;
 	private long totalTextSize;
 	private int fetchError = 0;
+	public ArrayList<MyPage> urlLists = new ArrayList<MyPage>();
 	public ArrayList<MyPage> fetchPageLists = new ArrayList<MyPage>();
 	public ArrayList<MyPage> visitPageLists = new ArrayList<MyPage>();
 

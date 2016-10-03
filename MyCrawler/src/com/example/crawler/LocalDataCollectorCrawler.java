@@ -15,6 +15,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class LocalDataCollectorCrawler extends WebCrawler {
 	private static final Logger logger = LoggerFactory.getLogger(LocalDataCollectorCrawler.class);
 	public int fetchError = 0;
+	private String domain = "http://www.espn.com/";
 
 	private static final Pattern FILTERS = Pattern
 			.compile(".*(\\.(css|js|mid|mp2|mp3|mp4|wav|avi|mov|mpeg|ram|m4v"
@@ -45,35 +46,33 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
+		MyPage p = new MyPage(url.getURL());
+		myCrawlStat.urlLists.add(p);
 		String href = url.getURL().toLowerCase();
-		return !FILTERS.matcher(href).matches() && href.startsWith("http://www.espn.com");
+		return !FILTERS.matcher(href).matches() && href.startsWith(domain);
 	}
 
 	@Override
 	public void visit(Page page) {
 		logger.info("Visited: {}", page.getWebURL().getURL());
 		myCrawlStat.incProcessedPages();
-		MyPage p = new MyPage();
-		// status code
-		p.setStatusCode(page.getStatusCode());
-		// URL
-		p.setUrl(page.getWebURL().getURL());
+		//visit page
+		MyPage p = new MyPage(page.getWebURL().getURL(), page.getStatusCode());
 		// out links false
 		p.setOutlink(false);
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData parseData = (HtmlParseData) page.getParseData();
 			Set<WebURL> links = parseData.getOutgoingUrls();
 			for (WebURL w : links) {
-				MyPage tmp = new MyPage();
-				tmp.setUrl(w.getURL());
+				MyPage tmp = new MyPage(page.getWebURL().getURL());
 				tmp.setOutlink(true);
-				myCrawlStat.pageLists.add(tmp);
+				p.outlinks.add(tmp);
 			}
 			// content-type
 			p.setType(page.getContentType());
 			myCrawlStat.incTotalLinks(links.size());
 			// outLinks
-			p.setSize(links.size());
+			p.setNumberOfOutLinks(links.size());
 			try {
 				myCrawlStat.incTotalTextSize(parseData.getText().getBytes("UTF-8").length);
 				// size
@@ -86,7 +85,7 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 		if ((myCrawlStat.getTotalProcessedPages() % 50) == 0) {
 			dumpMyData();
 		}
-//		myCrawlStat.pageLists.add(p);
+		myCrawlStat.visitPageLists.add(p);
 	}
 
 	/**

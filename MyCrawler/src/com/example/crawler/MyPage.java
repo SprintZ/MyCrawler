@@ -1,15 +1,27 @@
 package com.example.crawler;
 
+import java.util.ArrayList;
+
 public class MyPage {
 	private int statusCode;
 	private String url;
 	private int size;
-	private int outlinks;
 	//whether is outlink
 	private boolean outlink;
 	//whether is visit
 	private boolean visited;
 	private String type;
+	private int numberOfOutLinks;
+	public ArrayList<MyPage> outlinks = new ArrayList<MyPage>();
+
+	
+	public int getNumberOfOutLinks() {
+		return numberOfOutLinks;
+	}
+
+	public void setNumberOfOutLinks(int numberOfOutLinks) {
+		this.numberOfOutLinks = numberOfOutLinks;
+	}
 	
 	public boolean isVisited() {
 		return visited;
@@ -33,14 +45,6 @@ public class MyPage {
 
 	public void setSize(int size) {
 		this.size = size;
-	}
-
-	public int getOutlinks() {
-		return outlinks;
-	}
-
-	public void setOutlinks(int outlinks) {
-		this.outlinks = outlinks;
 	}
 
 	public String getType() {
