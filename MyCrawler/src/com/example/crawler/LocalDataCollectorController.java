@@ -65,11 +65,11 @@ public class LocalDataCollectorController {
 
 		String domain = "http://www.espn.com/";
 		String rootFolder = "data/crawl";
-		int numberOfCrawlers = 10;
+		int numberOfCrawlers = 30;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(rootFolder);
-		config.setMaxPagesToFetch(100);
+		config.setMaxPagesToFetch(1000);
 		config.setPolitenessDelay(100);
 		//fetch binary content
 		config.setIncludeBinaryContentInCrawling(true);
@@ -170,7 +170,7 @@ public class LocalDataCollectorController {
 
 		// CrawlReport
 		//fetches_attempted += fetches_aborted
-		HashSet<String> hs = new HashSet<String>();
+		//fetch
 		for (Object localData : crawlersLocalData) {
 			CrawlStat stat = (CrawlStat) localData;
 			fetches_aborted += stat.getFetchError();
@@ -198,7 +198,14 @@ public class LocalDataCollectorController {
 				else if(code == 404) {
 					Not_Found++;
 				}
-				
+			}
+		}
+		fetches_attempted += fetches_aborted;
+		
+		//visit
+		for (Object localData : crawlersLocalData) {
+			CrawlStat stat = (CrawlStat) localData;
+			for (MyPage p : stat.visitPageLists) {
 				int size = p.getSize();
 				if(size > 0 && size < 1) {
 					less_1KB++;
@@ -231,8 +238,16 @@ public class LocalDataCollectorController {
 				}	
 			}
 		}
-		fetches_attempted += fetches_aborted;
-
+		
+		//urls
+		HashSet<String> hs = new HashSet<String>();
+		for (Object localData : crawlersLocalData) {
+			CrawlStat stat = (CrawlStat) localData;
+			for(MyPage p: stat.urlLists) {
+				total_urls_extracted++;
+				hs.add(p.getUrl());
+			}
+		}
 		unique_urls_extracted = hs.size();
 		for(String str: hs) {
 			if(str.startsWith(domain)) {

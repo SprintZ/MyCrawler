@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.uci.ics.crawler4j.crawler.Page;
+import edu.uci.ics.crawler4j.parser.BinaryParseData;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
+import edu.uci.ics.crawler4j.parser.ParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
 public class LocalDataCollectorCrawler extends WebCrawler {
@@ -60,6 +62,7 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 		MyPage p = new MyPage(page.getWebURL().getURL(), page.getStatusCode());
 		// out links false
 		p.setOutlink(false);
+		
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData parseData = (HtmlParseData) page.getParseData();
 			Set<WebURL> links = parseData.getOutgoingUrls();
@@ -81,6 +84,12 @@ public class LocalDataCollectorCrawler extends WebCrawler {
 				// Do nothing
 			}
 		}
+		else {
+			BinaryParseData parseData = (BinaryParseData)page.getParseData();
+			p.setType(page.getContentType());
+			p.setSize(parseData.getHtml().length());
+		}
+		
 		// We dump this crawler statistics after processing every 50 pages
 		if ((myCrawlStat.getTotalProcessedPages() % 50) == 0) {
 			dumpMyData();

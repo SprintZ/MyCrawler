@@ -5,12 +5,12 @@ import java.util.ArrayList;
 public class MyPage {
 	private int statusCode;
 	private String url;
-	private int size;
+	private int size = 0;
 	//whether is outlink
 	private boolean outlink;
 	//whether is visit
 	private boolean visited;
-	private String type;
+	private String type = "";
 	private int numberOfOutLinks;
 	public ArrayList<MyPage> outlinks = new ArrayList<MyPage>();
 
