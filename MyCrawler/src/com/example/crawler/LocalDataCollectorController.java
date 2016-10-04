@@ -63,13 +63,13 @@ public class LocalDataCollectorController {
 		// return;
 		// }
 
-		String domain = "http://www.espn.com/";
+		String domain = "http://www.bbc.com/news";
 		String rootFolder = "data/crawl";
-		int numberOfCrawlers = 30;
+		int numberOfCrawlers = 50;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(rootFolder);
-		config.setMaxPagesToFetch(1000);
+		config.setMaxPagesToFetch(10000);
 		config.setPolitenessDelay(100);
 		//fetch binary content
 		config.setIncludeBinaryContentInCrawling(true);

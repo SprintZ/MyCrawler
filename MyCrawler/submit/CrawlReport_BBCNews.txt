@@ -1,0 +1,24 @@
+Name: Rui ZhangUSC ID: 9671773447News site crawled: http://www.bbc.com/news
+Fetch Statistics================# fetches attempted: 10000
+# fetches succeeded: 9836
+# fetches aborted: 0
+# fetches failed: 164
+Outgoing URLs:==============Total URLs extracted: 768098
+# unique URLs extracted: 160577
+# unique URLs within News Site: 20349
+# unique URLs outside News Site: 140228
+Status Codes:=============200 OK: 9836
+301 Moved Permanently: 148
+401 Unauthorized: 0
+403 Forbidden: 0
+404 Not Found: 9
+File Sizes:===========< 1KB: 0
+1KB ~ <10KB: 0
+10KB ~ <100KB: 0
+100KB ~ <1MB: 1
+>= 1MB: 9835
+Content Types:==============text/html: 9812
+image/gif: 0
+image/jpeg: 0
+image/png: 24
+application/pdf: 0

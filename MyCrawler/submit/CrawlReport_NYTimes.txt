@@ -1,0 +1,29 @@
+Name: Rui ZhangUSC ID: 9671773447News site crawled: http://www.nytimes.com/
+Fetch Statistics================
+# fetches attempted: 9999
+# fetches succeeded: 9371
+# fetches aborted: 0
+# fetches failed: 628
+Outgoing URLs:==============
+Total URLs extracted: 332753
+# unique URLs extracted: 114985
+# unique URLs within News Site: 41958
+# unique URLs outside News Site: 73027
+Status Codes:=============
+200 OK: 9371
+301 Moved Permanently: 482
+401 Unauthorized: 0
+403 Forbidden: 0
+404 Not Found: 19
+File Sizes:===========
+< 1KB: 0
+1KB ~ <10KB: 6
+10KB ~ <100KB: 9
+100KB ~ <1MB: 81
+>= 1MB: 9266
+Content Types:==============
+text/html: 9345
+image/gif: 0
+image/jpeg: 5
+image/png: 10
+application/pdf: 0

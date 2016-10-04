@@ -17,7 +17,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class LocalDataCollectorCrawler extends WebCrawler {
 	private static final Logger logger = LoggerFactory.getLogger(LocalDataCollectorCrawler.class);
 	public int fetchError = 0;
-	private String domain = "http://www.espn.com/";
+	private String domain = "http://www.bbc.com/news";
 
 	private static final Pattern FILTERS = Pattern
 			.compile(".*(\\.(css|js|mid|mp2|mp3|mp4|wav|avi|mov|mpeg|ram|m4v"
